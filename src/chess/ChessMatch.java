@@ -86,10 +86,11 @@ public class ChessMatch {
     }
 
     private Piece makeMove(Position source, Position target) {
-        Piece p = board.removePiece(source);
+        ChessPiece p = (ChessPiece) board.removePiece(source);
+        p.increaseMoveCount();
         Piece capturedPiece = board.removePiece(target);
 
-        // 🔴 CORREÇÃO MÍNIMA: rei não pode ser capturado
+        // CORREÇÃO MÍNIMA: rei não pode ser capturado
         if (capturedPiece instanceof King) {
             throw new ChessException("King cannot be captured");
         }
@@ -104,7 +105,8 @@ public class ChessMatch {
     }
 
     private void undoMove(Position source, Position target, Piece capturedPiece) {
-        Piece p = board.removePiece(target);
+        ChessPiece p = (ChessPiece) board.removePiece(target);
+        p.decreaseMoveCount();
         board.placePiece(p, source);
 
         if (capturedPiece != null) {
@@ -174,7 +176,7 @@ public class ChessMatch {
             return false;
         }
 
-        // 🔴 CORREÇÃO MÍNIMA: testar peças da MESMA cor
+        // CORREÇÃO MÍNIMA: testar peças da MESMA cor
         List<Piece> list = piecesOnTheBoard.stream()
                 .filter(x -> ((ChessPiece) x).getColor() == color)
                 .collect(Collectors.toList());
@@ -200,7 +202,7 @@ public class ChessMatch {
     }
 
     private void placeNewPiece(char column, int row, ChessPiece piece) {
-        // 🔴 CORREÇÃO MÍNIMA: NÃO usar (char) row
+        // CORREÇÃO MÍNIMA: NÃO usar (char) row
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
         piecesOnTheBoard.add(piece);
     }
